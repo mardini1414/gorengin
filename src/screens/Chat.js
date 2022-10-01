@@ -1,11 +1,10 @@
-import React, {useState} from 'react';
+import React, {useState, useRef, useEffect} from 'react';
 import {
   View,
   TouchableOpacity,
   TextInput,
   FlatList,
   KeyboardAvoidingView,
-  Alert,
 } from 'react-native';
 import ChatHeader from '../components/ChatHeader';
 import Entypo from 'react-native-vector-icons/Entypo';
@@ -15,6 +14,15 @@ import ChatBubble from '../components/ChatBubble';
 
 const Chat = ({navigation}) => {
   const [text, setText] = useState('');
+  const flatListRef = useRef();
+
+  const scrollToEnd = () => {
+    flatListRef.current.scrollToEnd({animated: true});
+  };
+
+  useEffect(() => {
+    scrollToEnd();
+  }, []);
 
   const addChat = data => {
     dataChat.push({
@@ -23,22 +31,25 @@ const Chat = ({navigation}) => {
       data,
     });
 
+    scrollToEnd();
     setText('');
   };
 
   return (
-    <KeyboardAvoidingView className="justify-between h-full bg-slate-700">
+    <View className="flex-1 bg-slate-700">
       <ChatHeader navigation={navigation} />
-      <FlatList
-        data={dataChat}
-        renderItem={ChatBubble}
-        keyExtractor={item => item.id}
-        showsVerticalScrollIndicator={false}
-        className="self-center m-4"
-        inverted
-      />
-      <KeyboardAvoidingView className="flex items-center mx-4">
-        <View className="flex flex-row items-center justify-center w-full gap-3 mb-3">
+      <KeyboardAvoidingView className="flex-1">
+        <FlatList
+          ref={flatListRef}
+          data={dataChat}
+          renderItem={ChatBubble}
+          keyExtractor={item => item.id}
+          showsVerticalScrollIndicator={false}
+          className="m-4"
+        />
+      </KeyboardAvoidingView>
+      <View className="flex items-center m-4">
+        <View className="flex flex-row items-center justify-center w-full gap-3">
           <View className="p-3 rounded-full bg-slate-900">
             <Entypo name="attachment" size={16} color="rgb(203, 213, 255)" />
           </View>
@@ -56,8 +67,8 @@ const Chat = ({navigation}) => {
             <Ionicons name="send" size={16} color="rgb(203, 213, 255)" />
           </TouchableOpacity>
         </View>
-      </KeyboardAvoidingView>
-    </KeyboardAvoidingView>
+      </View>
+    </View>
   );
 };
 

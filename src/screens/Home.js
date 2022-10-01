@@ -44,7 +44,7 @@ const Home = () => {
         data={dataLastVisited}
         keyExtractor={item => item.id}
         renderItem={ListCard}
-        className="mt-4"
+        className="mt-4 mb-10"
       />
     </View>
   );
